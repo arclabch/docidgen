@@ -22,32 +22,32 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <err.h>
-#include <uuid.h>
+#include <string.h>
+#include <time.h>
+
+/*
+ * docidgen -- Document ID generator
+ * Based on an UUID v4, but without hyphens.
+ */
 
 int
 main(void)
 {
+   unsigned char r[16];
    int i;
-   char *p, d[33];
-   uuid_t uuid;
 
-   if(uuidgen(&uuid, 1) != 0) {
-      err(1, "uuidgen()");
+   (void)srand((unsigned int)time(NULL));
+
+   for(i = 0; i < 16; i++) {
+      r[i] = (unsigned char)rand() % 255;
    }
 
-   uuid_to_string(&uuid, &p, NULL);
-   for(i = 0; i < 32; i++) {
-      if(i == 8 || i == 12 || i == 16 || i == 20) {
-         p++;
-      }
-      d[i] = *p++;
-   }
+   r[6] = 0x40 | (r[6] & 0xf);
+   r[8] = 0x80 | (r[8] & 0x3f);
 
-   d[32] = '\0';
-   free(p);
-
-   printf("%s\n", d);
+   printf("%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x\n",
+          r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9], r[10],
+          r[11], r[12], r[13], r[14], r[15]);
 
    return EXIT_SUCCESS;
 }
