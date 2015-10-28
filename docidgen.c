@@ -22,7 +22,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <time.h>
 
 /*
@@ -40,14 +39,16 @@ main(void)
 
    for(i = 0; i < 16; i++) {
       r[i] = (unsigned char)rand() % 255;
+      if(i == 6) {
+         r[i] = 0x40 | (r[i] & 0xf);
+      }
+      if(i == 8) {
+         r[i] = 0x80 | (r[i] & 0x3f);
+      }
+      printf("%02x", r[i]);
    }
 
-   r[6] = 0x40 | (r[6] & 0xf);
-   r[8] = 0x80 | (r[8] & 0x3f);
-
-   printf("%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x\n",
-          r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9], r[10],
-          r[11], r[12], r[13], r[14], r[15]);
+   printf("\n");
 
    return EXIT_SUCCESS;
 }
